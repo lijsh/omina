@@ -1,7 +1,7 @@
 ## wxa-utils
 > 小程序的一些增强方法，主要是 `Page` 的增强。
 
-具体实现可参考这篇文章：https://juejin.im/post/5b55c1056fb9a04f951d1d4b
+具体实现可参考这篇文章：https://juejin.im/post/5b55c1056fb9a04f951d1d4b
 
 ## 使用方法
 ``` js
