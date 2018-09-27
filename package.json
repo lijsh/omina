@@ -1,6 +1,6 @@
 {
-  "name": "wxa-utils",
-  "version": "2.0.0-alpha.2",
+  "name": "omina",
+  "version": "2.0.0-alpha.5",
   "description": "",
   "module": "dist/wxa.es.js",
   "main": "dist/wxa.js",

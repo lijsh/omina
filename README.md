@@ -1,13 +1,13 @@
-## wxa-utils
-> 小程序的一些增强方法，主要是 `Page` 的增强。
+## Omina
+> 一个简约的小程序增强库，提供了 `Page` 的增强及简易的全局状态同步。
 
 具体实现可参考这篇文章：https://juejin.im/post/5b55c1056fb9a04f951d1d4b
 
 ## 使用方法
 ``` js
-import Page from 'wx-utils'
+import { page } from 'wx-utils'
 
-Page({
+page({
   onLoad(options) {}
 })
 ```
