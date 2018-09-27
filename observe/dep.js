@@ -3,7 +3,6 @@ import { remove } from '../utils'
 let uid = 0
 
 export class Dep {
-  static target = null
   constructor() {
     this.id = ++uid
     this.subs = []
@@ -28,6 +27,8 @@ export class Dep {
     subs.forEach(sub => sub.update())
   }
 }
+
+Dep.target = null
 
 const targetStack = []
 

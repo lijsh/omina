@@ -1,5 +1,4 @@
 import { nextTick } from '../utils'
-const app = getApp()
 const watcherQueue = []
 let has = {}
 const pageMap = {}
@@ -8,10 +7,10 @@ function flushSchedulerQueue() {
   Object.keys(pageMap).forEach(route => {
     const map = pageMap[route]
     const data = map.expQueue.reduce((ret, cur) => {
-      ret[cur.key] = cur.exp(app)
+      ret[cur.key] = cur.exp(getApp())
       return ret
     }, {})
-    map.page.setData(data)
+    map.ctx.setData(data)
   })
   has = {}
   watcherQueue.length = 0
@@ -21,10 +20,10 @@ export function queueWatcher(watcher) {
   const id = watcher.id
   if (has[id]) return
   has[id] = true
-  const { ctx: page, exp, key } = watcher
-  const { route } = page
+  const { ctx, exp, key } = watcher
+  const { route } = ctx
   pageMap[route] = pageMap[route] || {
-    page,
+    ctx,
     expQueue: []
   }
   pageMap[route].expQueue.push({ exp, key })

@@ -3,12 +3,12 @@ import { set, del, observe } from './observe/index'
 import mitt from 'mitt'
 
 export default function wxApp(config) {
-  const { onLaunch } = config
+  const { onLaunch: originalOnLauch } = config
   config.onLaunch = function(...args) {
     promisify(this)
     this.globalData = this.globalData || {}
     observe(this.globalData)
-    if (onLaunch) onLaunch(...args)
+    if (originalOnLauch) originalOnLauch.bind(this)(...args)
   }
 
   config.bus = mitt()
