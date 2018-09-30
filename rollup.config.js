@@ -6,7 +6,7 @@ import fs from 'fs';
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 export default {
-  input: 'index.js',
+  input: 'src/index.js',
   plugins: [
     resolve(),
     commonjs(),
