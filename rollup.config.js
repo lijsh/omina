@@ -26,11 +26,20 @@ const buildConf = {
   input,
   plugins: plugins.concat(uglify()),
   output: [
-    { file: 'dist/wxa.min.js', format: 'cjs' },
+    { file: 'dist/omina.min.js', format: 'cjs' },
+  ]
+}
+
+const devConf = {
+  input,
+  plugins,
+  output: [
+    { file: 'demo/libs/omina.js', format: 'cjs' }
   ]
 }
 
 export default [
+  devConf,
   commonConf,
   buildConf
 ];

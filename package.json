@@ -2,8 +2,8 @@
   "name": "omina",
   "version": "2.0.0-alpha.5",
   "description": "",
-  "module": "dist/wxa.es.js",
-  "main": "dist/wxa.js",
+  "module": "dist/omina.es.js",
+  "main": "dist/omina.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "rollup": "rollup -c"

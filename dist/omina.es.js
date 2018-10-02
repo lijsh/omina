@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function def(obj, key, val, enumerable) {
   Object.defineProperty(obj, key, {
     value: val,
@@ -405,6 +401,16 @@ function page(config) {
         }, { isMapStateWatcher: true, exp: fn, key: key });
       });
     }
+    Object.defineProperties(this, {
+      '$app': {
+        get: getApp
+      },
+      '$bus': {
+        get: function get() {
+          return getApp().bus
+        }
+      }
+    });
     if (originalOnload) { originalOnload.call(this, onLoadOptions); }
   };
   config.$navTo = function (ref) {
@@ -417,7 +423,6 @@ function page(config) {
 
   config.$set = set;
   config.$del = del;
-  config.$bus = mitt();
 
   config.onUnload = function () {
     if (Array.isArray(this.$watchers)) {
@@ -722,5 +727,4 @@ function wxApp(config) {
   return App(config)
 }
 
-exports.page = page;
-exports.app = wxApp;
+export { page, wxApp as app };

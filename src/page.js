@@ -1,9 +1,8 @@
 import { set, del } from './observe/index'
 import { Watcher } from './observe/watcher'
-import mitt from 'mitt'
 
 export default function page(config) {
-  const { onLoad: originalOnload, onUnload: originalOnUnload, mapState } = config
+  const { onLoad: originalOnload, onUnload: originalOnUnload, mapData } = config
   config.onLoad = function onLoad(onLoadOptions) {
     const pages = getCurrentPages()
     this.$prevPage = pages[pages.length - 2]
@@ -11,9 +10,9 @@ export default function page(config) {
       onLoadOptions.params = this.$prevPage.$nextPageParams
       delete this.$prevPage.$nextPageParams
     }
-    if (mapState) {
-      Object.keys(mapState).forEach(key => {
-        const fn = mapState[key]
+    if (mapData) {
+      Object.keys(mapData).forEach(key => {
+        const fn = mapData[key]
         new Watcher(this, _ => {
           const ret = fn(getApp())
           this.setData({
@@ -23,6 +22,16 @@ export default function page(config) {
         }, { isMapStateWatcher: true, exp: fn, key })
       })
     }
+    Object.defineProperties(this, {
+      '$app': {
+        get: getApp
+      },
+      '$bus': {
+        get() {
+          return getApp().bus
+        }
+      }
+    })
     if (originalOnload) originalOnload.call(this, onLoadOptions)
   }
   config.$navTo = function ({ url, params }) {
@@ -32,7 +41,6 @@ export default function page(config) {
 
   config.$set = set
   config.$del = del
-  config.$bus = mitt()
 
   config.onUnload = function () {
     if (Array.isArray(this.$watchers)) {
