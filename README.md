@@ -3,13 +3,13 @@
 
 ## 特点
 - 轻量：聚焦 framework free 的原生开发，仅 12kb 大小，只包含必要的逻辑及两个蝇量级依赖 :)
-- 全局状态响应式同步：fork 了 Vue 中 observe 的逻辑，实现了页面 `data` 与 `globalData` 的同步
+- 全局状态响应式同步：fork 了 Vue 中 observe 的逻辑，实现了页面 `data` 与 `globalData` 的同步
 - 集成 event emitter：依赖 `mitt` 实现了全局及跨页面的 event emitter
 - 增强的 `Page` 实例及 `App` 实例
 - `wx` 接口的 promisify
 
 ## 使用方法
-- 将 [dist/omina.min.js]() (或 [dist/omina.js]()) 复制到项目相应目录中，如 `libs/omina.js`，然后引用：
+- 将 [dist/omina.min.js](https://github.com/lijsh/omina/blob/master/dist/omina.min.js) (或 [dist/omina.js](https://github.com/lijsh/omina/blob/master/dist/omina.js)) 复制到项目相应目录中，如 `libs/omina.js`，然后引用：
 ``` js
 import { page } from 'libs/omina'
 
