@@ -2,7 +2,7 @@
 > 一个简约的小程序增强库，提供了全局状态同步及增强的小程序原生对象（`Page` 实例及 `App` 实例）。
 
 ## 特点
-- 轻量：聚焦 framework free 的原生开发，仅 12kb 大小，只包含必要的逻辑及两个蝇量级依赖 :)
+- 轻量：聚焦 framework free 的原生开发，大小不到 10Kb，只包含必要的逻辑及两个蝇量级依赖 :)
 - 全局状态响应式同步：fork 了 Vue 中 observe 的逻辑，实现了页面 `data` 与 `globalData` 的同步
 - 集成 event emitter：依赖 `mitt` 实现了全局及跨页面的 event emitter
 - 增强的 `Page` 实例及 `App` 实例
@@ -39,7 +39,7 @@ app({
 
 - **`mapData`**
 
-`mapData` 是页面 `data` 与 `globalData` 保持同步的关键，`mapData` 对象中 key 的值均为函数，最终会定义为 page `data` 中对应的 key，当 key 函数中依赖的 `globalData` 发生变动，`omina` 会自动
+`mapData` 是页面 `data` 与 `globalData` 保持同步的关键，`mapData` 对象中 key 的值均为函数，最终会定义为 page `data` 中对应的 key，当 key 函数中依赖的 `globalData` 发生变动，`omina` 会自动
 ``` js
 import { page } from 'omina'
 
@@ -63,7 +63,7 @@ page({
 跳转到 `url` 指定页面，同时传递 `params` 参数，此参数可在下一页的 `onLoad` 中取回：
 ``` js
 // A 跳转 B
-page({
+page({
   onLoad() {
     this.$navTo({ url: 'urlToB', params: { foo: 'bar' } })
   }
