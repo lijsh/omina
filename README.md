@@ -39,7 +39,7 @@ app({
 
 - **`mapData`**
 
-`mapData` 是页面 `data` 与 `globalData` 保持同步的关键，`mapData` 对象中 key 的值均为函数，最终会定义为 page `data` 中对应的 key，当 key 函数中依赖的 `globalData` 发生变动，`omina` 会自动
+`mapData` 是页面 `data` 与 `globalData` 保持同步的关键，`mapData` 对象中 key 的值均为函数，最终会定义为 page 中 `data` 上对应的 key，当 key 函数中依赖的 `globalData` 字段发生变动，`omina` 会自动调用 `setData` 更新对应的 `data`：
 ``` js
 import { page } from 'omina'
 
@@ -52,7 +52,7 @@ page({
   }
   onLoad() {
     console.log(this.data.userInfo) // null
-    app.globalData.userInfo = { nickName: 'Omina' } // next tick 后 this.data.userInfo 变成 { nickName: 'Omina' }
+    app.globalData.userInfo = { nickName: 'Omina' } // userInfo 依赖 globalData.userInfo，next tick 后 this.data.userInfo 变成 { nickName: 'Omina' }
   }
 })
 
