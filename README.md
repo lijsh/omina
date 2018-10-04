@@ -33,9 +33,9 @@ app({
 
 获取上一页的页面对象，在一些只涉及到两个页面的跨页面通讯中比较好用。
 
-- **$bus** （暂不推荐使用，因不会自动清除事件回调）
+- **$bus** （暂不推荐使用）
 
-所有页面对象（通过 `page` 生成的页面对象）都集成了同一个微型事件总线（event emitter），方便实现跨页面通信。
+所有页面对象（通过 `page` 生成的页面对象）都集成了同一个微型事件总线（event emitter），方便实现跨页面通信。这个 event emitter 与 `App` 实例上的 `bus` 是同一个对象。
 
 - **`mapData`**
 
@@ -94,6 +94,19 @@ app({
 - **bus**
 
 `App` 实例上的 `bus` 属性是 `mitt` 实现的全局单例事件总线，具体 API 请参考 [mitt](https://github.com/developit/mitt)
+
+- **set**
+
+类似 `Vue.set`，`Omina` 为 `App` 实例增加了一个 `set` 方法，用来显式给 observe 后的对象添加新属性：
+``` js
+const app = getApp()
+app.set(app.globalData, 'someKey', 'someVal')
+```
+
+- **del**
+
+类似 `Vue.delete`
+
 ## TODO
 - `Component` 的增强
 -  支持 `Computed` 属性
