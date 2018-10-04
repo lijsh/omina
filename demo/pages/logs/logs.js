@@ -1,15 +1,15 @@
 //logs.js
-const util = require('../../utils/util.js')
+import util from '../../utils/util.js'
+import { page } from '../../libs/omina.js'
 
-Page({
-  data: {
-    logs: []
+page({
+  mapData: {
+    logs(app) {
+      return app.globalData.logs.map(log => 
+        util.formatTime(new Date(log))
+      )
+    }
   },
-  onLoad: function () {
-    this.setData({
-      logs: (wx.getStorageSync('logs') || []).map(log => {
-        return util.formatTime(new Date(log))
-      })
-    })
-  }
+  data: { },
+  onLoad: function () { }
 })

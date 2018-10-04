@@ -161,9 +161,11 @@ function observe(data) {
   return ob
 }
 
-function defineReactive(data, key) {
+function defineReactive(data, key, val) {
   var dep = new Dep;
-  var val = data[key];
+  if (arguments.length === 2) {
+    val = data[key];
+  }
   var childOb = observe(val);
   Object.defineProperty(data, key, {
     enumerable: true,

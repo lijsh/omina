@@ -48,9 +48,11 @@ export function observe(data) {
   return ob
 }
 
-function defineReactive(data, key) {
+function defineReactive(data, key, val) {
   const dep = new Dep
-  let val = data[key]
+  if (arguments.length === 2) {
+    val = data[key]
+  }
   let childOb = observe(val)
   Object.defineProperty(data, key, {
     enumerable: true,

@@ -7,6 +7,7 @@ app({
     var logs = this.getStorageSync('logs') || []
     logs.unshift(Date.now())
     this.setStorageSync('logs', logs)
+    this.set(this.globalData, 'logs', logs)
 
     // 登录
     this.login()
