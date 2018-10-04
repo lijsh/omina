@@ -13,10 +13,10 @@
   "license": "MIT",
   "dependencies": {
     "mitt": "^1.1.3",
-    "promisify-wxa": "0.0.9"
+    "promisify-wxa": "^1.0.0-beta"
   },
   "devDependencies": {
-    "rollup": "^0.66.2",
+    "rollup": "^0.66.4",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.4.0",

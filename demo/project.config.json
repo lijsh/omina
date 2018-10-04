@@ -13,7 +13,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "2.3.0",
 	"appid": "wxc4401c7fd1016040",
-	"projectname": "demo",
+	"projectname": "omina-demo",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
