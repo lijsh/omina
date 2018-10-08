@@ -32,8 +32,8 @@ export default function page(config) {
     if (originalOnload) originalOnload.call(this, onLoadOptions)
   }
   config.$navTo = function ({ url, params }) {
-    this.__params = params
-    wx.navigateTo({ url })
+    this.$nextPageParams = params
+    return this.$app.navigateTo({ url })
   }
 
   config.$on = function $on(evt, cb) {
@@ -60,12 +60,14 @@ export default function page(config) {
     }
     delete this.$watchers
     // detach event cb
-    Object.keys(this.events).forEach(evt => {
-      const cbs = this.events[evt]
-      cbs.forEach(cb => {
-        emitter.off(evt, cb)
+    if (this.events) {
+      Object.keys(this.events).forEach(evt => {
+        const cbs = this.events[evt]
+        cbs.forEach(cb => {
+          emitter.off(evt, cb)
+        })
       })
-    })
+    }
     if (originalOnUnload) originalOnUnload.call(this)
   }
   return Page(config)

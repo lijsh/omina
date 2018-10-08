@@ -417,8 +417,8 @@ function page(config) {
     var url = ref.url;
     var params = ref.params;
 
-    this.__params = params;
-    wx.navigateTo({ url: url });
+    this.$nextPageParams = params;
+    return this.$app.navigateTo({ url: url })
   };
 
   config.$on = function $on(evt, cb) {
@@ -450,12 +450,14 @@ function page(config) {
     }
     delete this.$watchers;
     // detach event cb
-    Object.keys(this.events).forEach(function (evt) {
-      var cbs = this$1.events[evt];
-      cbs.forEach(function (cb) {
-        emitter.off(evt, cb);
+    if (this.events) {
+      Object.keys(this.events).forEach(function (evt) {
+        var cbs = this$1.events[evt];
+        cbs.forEach(function (cb) {
+          emitter.off(evt, cb);
+        });
       });
-    });
+    }
     if (originalOnUnload) { originalOnUnload.call(this); }
   };
   return Page(config)

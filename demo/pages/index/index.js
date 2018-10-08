@@ -19,13 +19,14 @@ page({
   },
   //事件处理函数
   bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
+    this.$navTo({ url: '../logs/logs', params: { foo: 'bar' } })
+      .then(console.log)
   },
   onLoad: function () {},
   getUserInfo: function(e) {
-    console.log(e)
     app.globalData.userInfo = e.detail.userInfo
+  },
+  onBack() {
+    app.showToast({ title: '$prevPage调用' })
   }
 })
