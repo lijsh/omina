@@ -48,9 +48,9 @@ page({
   }
 })
 ```
-`mapData` 建立的数据同步是跨页面的，只要页面还保留在页面栈中没卸载，修改 `globalData` 会触发页面对应 `data` 的修改。
+`mapData` 建立的数据同步是跨页面的，只要页面还保留在页面栈中没卸载，修改 `globalData` 会触发页面对应 `data` 的修改。
 
-不过直接修改 `globalData` 不利于代码复用与封装，`omina` 在  `App` 实例中暴露了一个事件总线，你可以充分利用自定义事件机制来达成类似 `Vuex` 的效果：
+不过直接修改 `globalData` 不利于代码复用与封装，`omina` 在  `App` 实例中暴露了一个事件总线，你可以充分利用自定义事件机制来达成类似 `Vuex` 的效果：
 ``` js
 import { app } from 'omina'
 app({
@@ -122,9 +122,9 @@ this.$emit('test', { foo: 'bar' }) // log 出 { foo: 'bar' }
 ```
 `omina` 会在页面 unload 的时候自动清除当前页面监听的事件，如果不希望事件监听被自动清除，请使用 `App` 上的 `bus`。
 
-总结一下，在 `omina` 中实现跨页面数据传输的方法有三种：
+总结一下，在 `omina` 中实现跨页面数据传输的方法有三种：
 1. 通过 `mapData` 将页面数据与 `globalData` 绑定，修改 `globalData` 时所有对被修改属性有依赖的页面自动 `setData`
-2. 使用 `$prevPage` 属性获取上一页面的 `data` 及调用上一页面的方法
+2. 使用 `$prevPage` 属性获取上一页面的 `data` 及调用上一页面的方法
 3. 使用 `$on` 及 `$emit` 通过自定义事件的监听与触发实现跨页面通讯
 
 > 扩展原生 `Page` 实例的原理，可参考 [扩展原生 Page 对象](https://github.com/lijsh/omina/wiki/Omina-%E5%AE%9E%E7%8E%B0%E2%80%94%E2%80%94%E6%89%A9%E5%B1%95%E5%8E%9F%E7%94%9F-Page-%E5%AF%B9%E8%B1%A1)
