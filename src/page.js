@@ -1,5 +1,7 @@
 import { set, del } from './observe/index'
 import { Watcher } from './observe/watcher'
+import mitt from 'mitt'
+const emitter = mitt()
 
 export default function page(config) {
   const { onLoad: originalOnload, onUnload: originalOnUnload, mapData } = config
@@ -26,11 +28,6 @@ export default function page(config) {
       '$app': {
         get: getApp
       },
-      '$bus': {
-        get() {
-          return getApp().bus
-        }
-      }
     })
     if (originalOnload) originalOnload.call(this, onLoadOptions)
   }
@@ -39,16 +36,36 @@ export default function page(config) {
     wx.navigateTo({ url })
   }
 
+  config.$on = function $on(evt, cb) {
+    if (typeof cb !== 'function') return
+    this.events = this.events || Object.create(null)
+    this.events[evt] = this.events[evt] || []
+    this.events[evt].push(cb)
+    return emitter.on(evt, cb)
+  }
+
+  config.$emit = function $emit(event, ...args) {
+    return emitter.emit(event, ...args)
+  }
+
   config.$set = set
   config.$del = del
 
   config.onUnload = function () {
+    // teardown watcher
     if (Array.isArray(this.$watchers)) {
       this.$watchers.forEach(watcher => {
         watcher.teardown()
       })
     }
     delete this.$watchers
+    // detach event cb
+    Object.keys(this.events).forEach(evt => {
+      const cbs = this.events[evt]
+      cbs.forEach(cb => {
+        emitter.off(evt, cb)
+      })
+    })
     if (originalOnUnload) originalOnUnload.call(this)
   }
   return Page(config)

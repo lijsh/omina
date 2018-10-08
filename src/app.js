@@ -8,7 +8,7 @@ export default function wxApp(config) {
     promisify(this)
     this.globalData = this.globalData || {}
     observe(this.globalData)
-    if (originalOnLauch) originalOnLaunch.bind(this)(...args)
+    if (originalOnLaunch) originalOnLaunch.bind(this)(...args)
   }
 
   config.bus = mitt()

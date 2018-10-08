@@ -316,6 +316,71 @@ Watcher.prototype.teardown = function teardown () {
   }
 };
 
+//      
+// An event handler can take an optional event argument
+// and should not return a value
+                                          
+                                                               
+
+// An array of all currently registered event handlers for a type
+                                            
+                                                            
+// A map of event types and their corresponding event handlers.
+                        
+                                 
+                                   
+  
+
+/** Mitt: Tiny (~200b) functional event emitter / pubsub.
+ *  @name mitt
+ *  @returns {Mitt}
+ */
+function mitt(all                 ) {
+	all = all || Object.create(null);
+
+	return {
+		/**
+		 * Register an event handler for the given type.
+		 *
+		 * @param  {String} type	Type of event to listen for, or `"*"` for all events
+		 * @param  {Function} handler Function to call in response to given event
+		 * @memberOf mitt
+		 */
+		on: function on(type        , handler              ) {
+			(all[type] || (all[type] = [])).push(handler);
+		},
+
+		/**
+		 * Remove an event handler for the given type.
+		 *
+		 * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
+		 * @param  {Function} handler Handler function to remove
+		 * @memberOf mitt
+		 */
+		off: function off(type        , handler              ) {
+			if (all[type]) {
+				all[type].splice(all[type].indexOf(handler) >>> 0, 1);
+			}
+		},
+
+		/**
+		 * Invoke all handlers for the given type.
+		 * If present, `"*"` handlers are invoked after type-matched handlers.
+		 *
+		 * @param {String} type  The event type to invoke
+		 * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+		 * @memberOf mitt
+		 */
+		emit: function emit(type        , evt     ) {
+			(all[type] || []).slice().map(function (handler) { handler(evt); });
+			(all['*'] || []).slice().map(function (handler) { handler(type, evt); });
+		}
+	};
+}
+//# sourceMappingURL=mitt.es.js.map
+
+var emitter = mitt();
+
 function page(config) {
   var originalOnload = config.onLoad;
   var originalOnUnload = config.onUnload;
@@ -345,11 +410,6 @@ function page(config) {
       '$app': {
         get: getApp
       },
-      '$bus': {
-        get: function get() {
-          return getApp().bus
-        }
-      }
     });
     if (originalOnload) { originalOnload.call(this, onLoadOptions); }
   };
@@ -361,16 +421,41 @@ function page(config) {
     wx.navigateTo({ url: url });
   };
 
+  config.$on = function $on(evt, cb) {
+    if (typeof cb !== 'function') { return }
+    this.events = this.events || Object.create(null);
+    this.events[evt] = this.events[evt] || [];
+    this.events[evt].push(cb);
+    return emitter.on(evt, cb)
+  };
+
+  config.$emit = function $emit(event) {
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+    return emitter.emit.apply(emitter, [ event ].concat( args ))
+  };
+
   config.$set = set;
   config.$del = del;
 
   config.onUnload = function () {
+    var this$1 = this;
+
+    // teardown watcher
     if (Array.isArray(this.$watchers)) {
       this.$watchers.forEach(function (watcher) {
         watcher.teardown();
       });
     }
     delete this.$watchers;
+    // detach event cb
+    Object.keys(this.events).forEach(function (evt) {
+      var cbs = this$1.events[evt];
+      cbs.forEach(function (cb) {
+        emitter.off(evt, cb);
+      });
+    });
     if (originalOnUnload) { originalOnUnload.call(this); }
   };
   return Page(config)
@@ -647,70 +732,8 @@ function processApis(ctx) {
   });
 }
 
-//      
-// An event handler can take an optional event argument
-// and should not return a value
-                                          
-                                                               
-
-// An array of all currently registered event handlers for a type
-                                            
-                                                            
-// A map of event types and their corresponding event handlers.
-                        
-                                 
-                                   
-  
-
-/** Mitt: Tiny (~200b) functional event emitter / pubsub.
- *  @name mitt
- *  @returns {Mitt}
- */
-function mitt(all                 ) {
-	all = all || Object.create(null);
-
-	return {
-		/**
-		 * Register an event handler for the given type.
-		 *
-		 * @param  {String} type	Type of event to listen for, or `"*"` for all events
-		 * @param  {Function} handler Function to call in response to given event
-		 * @memberOf mitt
-		 */
-		on: function on(type        , handler              ) {
-			(all[type] || (all[type] = [])).push(handler);
-		},
-
-		/**
-		 * Remove an event handler for the given type.
-		 *
-		 * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
-		 * @param  {Function} handler Handler function to remove
-		 * @memberOf mitt
-		 */
-		off: function off(type        , handler              ) {
-			if (all[type]) {
-				all[type].splice(all[type].indexOf(handler) >>> 0, 1);
-			}
-		},
-
-		/**
-		 * Invoke all handlers for the given type.
-		 * If present, `"*"` handlers are invoked after type-matched handlers.
-		 *
-		 * @param {String} type  The event type to invoke
-		 * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
-		 * @memberOf mitt
-		 */
-		emit: function emit(type        , evt     ) {
-			(all[type] || []).slice().map(function (handler) { handler(evt); });
-			(all['*'] || []).slice().map(function (handler) { handler(type, evt); });
-		}
-	};
-}
-
 function wxApp(config) {
-  var originalOnLauch = config.onLaunch;
+  var originalOnLaunch = config.onLaunch;
   config.onLaunch = function() {
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
@@ -718,7 +741,7 @@ function wxApp(config) {
     processApis(this);
     this.globalData = this.globalData || {};
     observe(this.globalData);
-    if (originalOnLauch) { originalOnLauch.bind(this).apply(void 0, args); }
+    if (originalOnLaunch) { originalOnLaunch.bind(this).apply(void 0, args); }
   };
 
   config.bus = mitt();

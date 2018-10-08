@@ -4,7 +4,7 @@
 ## 特点
 - 轻量：聚焦 framework free 的原生开发，大小不到 10Kb，只包含必要的逻辑及两个蝇量级依赖 :)
 - 全局状态响应式同步：fork 了 Vue 中 observe 的逻辑，实现了页面 `data` 与 `globalData` 的同步
-- 集成 event emitter：实现了一个全局单例的 event emitter
+- 集成事件总线
 - 增强的 `Page` 实例及 `App` 实例
 - `wx` 接口的 promisify
 
@@ -35,7 +35,6 @@ app({
 ``` js
 import { page } from 'omina'
 
-
 page({
   mapData: {
     userInfo(app) {
@@ -49,15 +48,32 @@ page({
 })
 
 ```
+直接修改 `globalData` 不利于代码复用与封装，`omina` 在  `App` 实例中暴露了一个事件总线，你可以充分利用自定义事件机制来达成类似 `Vuex` 的效果：
+``` js
+import { app } from 'omina'
+app({
+  onLaunch() {
+    app.bus.on('foo', (data) => {
+      app.set(app.globalData, 'foo', data)
+    })
+  }
+})
+
+// 在某页面调用
+app.bus.emit('foo', { testFoo: 'testFoo' })
+```
 
 - **$prevPage**
 
-获取上一页的页面对象，在一些只涉及到两个页面的跨页面通讯中比较好用。
+获取上一页的页面对象，在一些只涉及到两个页面的跨页面通讯中用起来更方便。
 ``` js
 // Page A
 page({
   data: {
     foo: 'bar'
+  },
+  methodsA() {
+    console.log('这是 A 页面的方法')
   }
 })
 
@@ -66,6 +82,7 @@ page({
   data: {},
   onLoad() {
     console.log(this.$prevPage.data) // 打印出 Page A 的 data 属性，即 { foo: 'bar' }
+    this.$prevPage.methodsA() // 打印出 '这是 A 页面的方法'
   }
 })
 ```
@@ -89,11 +106,17 @@ page({
 })
 ```
 
-- **$bus** （暂不推荐使用）
+- $on / $emit
 
-所有页面对象（通过 `page` 生成的页面对象）都集成了同一个微型事件总线（event emitter），方便实现跨页面通信。这个 event emitter 与 `App` 实例上的 `bus` 是同一个对象。
+所有页面对象（通过 `omina` 的 `page` 方法生成的页面对象）都集成了同一个事件总线，这个事件总线为页面对象增加了 `$on` 及 `$emit` 方法，方便实现跨页面通信。这个事件总线与 `App` 实例上的 `bus` **不是**同一个对象。
 
-扩展原生 `Page` 实例的原理，可参考  [扩展原生 Page 对象](https://github.com/lijsh/omina/wiki/Omina-%E5%AE%9E%E7%8E%B0%E2%80%94%E2%80%94%E6%89%A9%E5%B1%95%E5%8E%9F%E7%94%9F-Page-%E5%AF%B9%E8%B1%A1)
+``` js
+// Page A 中定义
+
+```
+`omina` 会在页面 unload 的时候自动清除当前页面监听的事件，如果不希望事件监听被自动清除，请使用 `App` 上的 `bus`。
+
+> 扩展原生 `Page` 实例的原理，可参考 [扩展原生 Page 对象](https://github.com/lijsh/omina/wiki/Omina-%E5%AE%9E%E7%8E%B0%E2%80%94%E2%80%94%E6%89%A9%E5%B1%95%E5%8E%9F%E7%94%9F-Page-%E5%AF%B9%E8%B1%A1)
 
 ## 全局对象实例属性及方法
 `App` 实例上代理了 'wx' 对象上的 API，其中回调风格的 API 均进行了 promisify：
